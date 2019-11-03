@@ -4,3 +4,6 @@ SCREEN_HEIGHT = 480
 
 POINT_WIDTH = 30
 POINT_HEIGHT = 30
+
+# Delay of animation in ms
+ANIMATION_DELAY = 500

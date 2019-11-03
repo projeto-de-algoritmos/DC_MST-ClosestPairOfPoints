@@ -13,14 +13,17 @@ from closestPairOfPoints import ClosestPairOfPointAlg, ListClosestPoints, Closes
 
 
 def print_closest_pair(pair):
-    print("( {", pair.point1.x, ", ", pair.point1.y, "}", end="")
-    print("{", pair.point2.x, ", ", pair.point2.y, "} )", end="")
+    print("( ", pair.point1.index,
+          ": {", pair.point1.x, ", ", pair.point1.y, "}, ", end="")
+    print(pair.point2.index, ": ",
+          "{", pair.point2.x, ", ", pair.point2.y, "} )", end="")
+    print(" distance: ", pair.distance, end="")
 
 
 def init_points(window):
     range_x = SCREEN_WIDTH - POINT_WIDTH
     range_y = SCREEN_HEIGHT - POINT_HEIGHT
-    qtt_points = 10
+    qtt_points = 5
 
     generator = PointGenerator()
     points = []

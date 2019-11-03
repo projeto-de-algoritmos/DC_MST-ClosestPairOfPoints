@@ -115,8 +115,6 @@ class ClosestPairOfPointAlg:
                     if self.__off_black_list(list1[count1], list2[count2], black_list):
                         closestPoint = self.new_closest_pair(
                             list1[count1], list2[count2], distance)
-                        # self.check_cycle_on_add_closest_pair(
-                        #     list1[count1], list2[count2], distance)
 
                 if count2 < len(list2):
                     count2 += 1

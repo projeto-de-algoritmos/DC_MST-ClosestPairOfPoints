@@ -15,9 +15,12 @@ class Window(QMainWindow):
         self.image = QPixmap("assets/picture.jpg")
         self.setGeometry(100, 100, SCREEN_WIDTH, SCREEN_HEIGHT)
         self.show()
+        self.running_annimation = False
 
         self.points = []
         self.lines = []
+
+        QMainWindow.keyPressEvent = self.keyPressEvent
 
     def paintEvent(self, event=None):
         painter = QPainter(self)
@@ -31,10 +34,21 @@ class Window(QMainWindow):
         for point in self.points:
             point.draw(painter)
 
+        print("draw")
+
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.drawing = True
             self.lastPoint = event.pos()
+
+    def keyPressEvent(self, event):
+        key = event.key()
+        print(key)
+        print(Qt.Key_Return)
+        print(key == Qt.Key_Return)
+        if key == Qt.Key_Return:
+            print("pause")
+            self.pause_resume_animation()
 
     def mouseMoveEvent(self, event):
         painter = QPainter(self.image)
@@ -68,8 +82,17 @@ class Window(QMainWindow):
     def animation_add_lines(self, lines):
         self.pendent_animation_lines = lines
         self.timer = QTimer(
-            self, timeout=self.update_animation_line, interval=2000)
+            self, timeout=self.update_animation_line, interval=ANIMATION_DELAY)
+        self.running_annimation = True
         self.timer.start()
+
+    def pause_resume_animation(self):
+        if self.running_annimation == True:
+            self.running_annimation = False
+            self.timer.stop()
+        else:
+            self.running_annimation = True
+            self.timer.start()
 
     @QtCore.pyqtSlot()
     def update_animation_line(self):
@@ -78,4 +101,5 @@ class Window(QMainWindow):
             self.lines.append(self.pendent_animation_lines.pop(0))
             self.update()
         else:
+            self.running_annimation = False
             self.timer.stop()

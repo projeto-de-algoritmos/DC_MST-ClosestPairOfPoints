@@ -1,5 +1,6 @@
 import math
 from copy import deepcopy
+from util import check_cycle
 
 
 def euclideanDistance(point1, point2): return math.sqrt(
@@ -21,10 +22,10 @@ class ListClosestPoints:
 
 class ClosestPairOfPointAlg:
     def __init__(self, list):
-        self.sortedListX = list
+        self.sorted_list_x = list
 
     def search(self):
-        sortedList = deepcopy(self.sortedListX)
+        sortedList = deepcopy(self.sorted_list_x)
 
         result = self.__merge_in_x(0, len(sortedList) - 1, sortedList)
         return result.closestPoints
@@ -41,7 +42,7 @@ class ClosestPairOfPointAlg:
         print(" ]")
 
     def generate_minimum_tree(self):
-        sortedList = deepcopy(self.sortedListX)
+        sortedList = deepcopy(self.sorted_list_x)
 
         tree = []
 
@@ -60,6 +61,21 @@ class ClosestPairOfPointAlg:
                 return False
 
         return True
+
+    def new_closest_pair(self, point1, point2, distance):
+        closestPoint = ClosestPoint(point1, point2, distance)
+        point1.add_neighbor(point2)
+        point2.add_neighbor(point1)
+        return closestPoint
+
+    def check_cycle_on_add_closest_pair(self, point1, point2, distance):
+        test_points = deepcopy(self.sorted_list_x)
+        test_point1 = deepcopy(point1)
+        test_point2 = deepcopy(point2)
+
+        closest = self.new_closest_pair(point1, point2, distance)
+        check_cycle(test_point1, None)
+        pass
 
     def __merge_list_in_y(self, list_closest_points1: list,
                           list_closest_points2: list, black_list=[]) -> list:
@@ -86,9 +102,10 @@ class ClosestPairOfPointAlg:
 
                 if (distance < closestPoint.distance):
                     if self.__off_black_list(list1[count1], list2[count2], black_list):
-                        closestPoint.point1 = list1[count1]
-                        closestPoint.point2 = list2[count2]
-                        closestPoint.distance = distance
+                        closestPoint = self.new_closest_pair(
+                            list1[count1], list2[count2], distance)
+                        # self.check_cycle_on_add_closest_pair(
+                        #     list1[count1], list2[count2], distance)
 
                 if count2 < len(list2):
                     count2 += 1
@@ -98,9 +115,8 @@ class ClosestPairOfPointAlg:
                 distance = euclideanDistance(list1[count1], list2[count2])
                 if distance < closestPoint.distance:
                     if self.__off_black_list(list1[count1], list2[count2], black_list):
-                        closestPoint.point1 = list1[count1]
-                        closestPoint.point2 = list2[count2]
-                        closestPoint.distance = distance
+                        closestPoint = self.new_closest_pair(
+                            list1[count1], list2[count2], distance)
 
                 if count1 < len(list1):
                     count1 += 1
@@ -130,7 +146,8 @@ class ClosestPairOfPointAlg:
 
                 if closestPointTest.distance < closestPoint.distance:
                     if self.__off_black_list(closestPointTest.point1, closestPointTest.point2, black_list):
-                        closestPoint = closestPointTest
+                        closestPoint = self.new_closest_pair(
+                            closestPointTest.point1, closestPointTest.point2, closestPointTest.distance)
 
             return ListClosestPoints(partialList.list, closestPoint)
 

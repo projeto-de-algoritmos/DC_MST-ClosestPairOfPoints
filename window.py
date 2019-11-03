@@ -2,7 +2,7 @@ from config import *
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow
 from PyQt5.QtGui import QPainter, QBrush, QPen, QPixmap
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt, QPoint, QRectF
 from point import Point
 
 
@@ -40,7 +40,6 @@ class Window(QMainWindow):
 
         count = 1
         for line in self.lines:
-            # print("draw line ", count)
             count += 1
             line.draw(painter)
 

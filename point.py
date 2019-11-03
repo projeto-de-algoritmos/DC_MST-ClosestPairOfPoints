@@ -1,8 +1,11 @@
 from random import randint
 from config import *
+from PyQt5.QtCore import Qt, QPoint, QRectF
 
 
 class Point:
+    index_count = 1
+
     def __init__(self, x, y, width=0, height=0):
         self.x = x
         self.y = y
@@ -10,6 +13,11 @@ class Point:
         self.__height = height
         self.center_x = width / 2 + x
         self.center_y = height / 2 + y
+
+        self.index = Point.index_count
+        Point.index_count += 1
+        self.neighbors = []
+        self.visited = 'unvisited'
 
     @property
     def width(self):
@@ -29,8 +37,14 @@ class Point:
         self.__height = height
         self.center_y = height / 2 + self.y
 
+    def add_neighbor(self, point):
+        self.neighbors.append(point)
+
     def draw(self, painter):
         painter.drawEllipse(self.x, self.y, self.__width, self.__height)
+        painter.drawText(
+            QRectF(self.center_x, self.center_y, self.__width, self.__height),
+            Qt.AlignCenter | Qt.AlignTop, str(self.index))
 
 
 class PointGenerator:

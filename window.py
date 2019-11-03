@@ -6,11 +6,18 @@ from PyQt5.QtCore import Qt, QPoint
 
 
 class Point:
-    def __init__(self, panel):
-        painter = QPainter(panel)
+    def __init__(self, panel, x, y, width, height):
+        self.panel = panel
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+
+    def draw(self):
+        painter = QPainter(self.panel)
         painter.setPen(QPen(Qt.red, 3, Qt.SolidLine))
         painter.setBrush(QBrush(Qt.white, Qt.DiagCrossPattern))
-        painter.drawEllipse(100, 150, 80, 80)
+        painter.drawEllipse(self.x, self.y, self.width, self.height)
 
 
 class Window(QMainWindow):
@@ -23,10 +30,14 @@ class Window(QMainWindow):
         # self.resize(self.image.width(), self.image.height())
         self.show()
 
+        self.points = []
+
     def paintEvent(self, event):
         painter = QPainter(self)
-        # painter.drawPixmap(self.rect(), self.image)
-        self.arcTest = Point(self)
+        painter.drawPixmap(self.rect(), self.image)
+
+        for point in self.points:
+            point.draw()
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -46,3 +57,15 @@ class Window(QMainWindow):
     def mouseReleaseEvent(self, event):
         if event.button == Qt.LeftButton:
             self.drawing = False
+
+    def add_point(self, point):
+        point = Point(self, point.x, point.y, POINT_WIDTH, POINT_HEIGHT)
+        self.points.append(point)
+
+    def add_points(self, points):
+        new_points = []
+
+        for point in points:
+            new_points.append(Point(self, point.x, point.y,
+                                    POINT_WIDTH, POINT_HEIGHT))
+        self.points.extend(new_points)

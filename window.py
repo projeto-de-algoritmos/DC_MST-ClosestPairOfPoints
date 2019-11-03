@@ -43,22 +43,9 @@ class Window(QMainWindow):
 
     def keyPressEvent(self, event):
         key = event.key()
-        print(key)
-        print(Qt.Key_Return)
-        print(key == Qt.Key_Return)
         if key == Qt.Key_Return:
             print("pause")
             self.pause_resume_animation()
-
-    def mouseMoveEvent(self, event):
-        painter = QPainter(self.image)
-        painter.setRenderHint(QtGui.QPainter.Antialiasing)
-
-        if event.buttons() and Qt.LeftButton and self.drawing:
-            painter.setPen(QPen(Qt.red, 3, Qt.SolidLine))
-            painter.drawLine(self.lastPoint, event.pos())
-            self.lastPoint = event.pos()
-            self.update()
 
     def mouseReleaseEvent(self, event):
         if event.button == Qt.LeftButton:

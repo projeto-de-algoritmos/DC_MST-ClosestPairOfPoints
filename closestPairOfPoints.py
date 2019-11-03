@@ -33,13 +33,16 @@ class ClosestPairOfPointAlg:
         return result.closestPoints
 
     def __print_blacklist(self, black_list):
+        print("\n-------------------------------")
         print("black_list")
 
         print("[ ", end="")
         for pair in black_list:
             print("( ", end="")
-            print("{", pair.point1.x, ", ", pair.point1.y, "}", end="")
-            print("{", pair.point2.x, ", ", pair.point2.y, "}", end="")
+            print("%s: { %s, %s}, " % (pair.point1.index,
+                                       pair.point1.x, pair.point1.y), end="")
+            print("%s: { %s, %s}, " % (pair.point2.index,
+                                       pair.point2.x, pair.point2.y), end="")
             print(" ), ", end="")
         print(" ]")
 
@@ -54,23 +57,27 @@ class ClosestPairOfPointAlg:
                 0, len(sortedList) - 1, sortedList, tree)
             tree.append(result.closestPoints)
 
-            # window.add_line(result.closestPoints.point1,
-            #                 result.closestPoints.point2)
             lines.append(LineClosestPoint(result.closestPoints.point1,
                                           result.closestPoints.point2))
+
+            self.__print_blacklist(tree)
 
         window.animation_add_lines(lines)
         # check_cycle(deepcopy(tree[0].point1), None)
 
         return tree
 
-    def __off_black_list(self, point1, point2, black_list=[]):
+    def __off_black_list(self, point1, point2, distance, black_list=[]):
+        print('( %s: {%s, %s}, ' % (point1.index, point1.x, point1.y), end="")
+        print('%s: {%s, %s} ) = %s' %
+              (point2.index, point2.x, point2.y, distance))
 
         for pair in black_list:
-            if (point1.x == pair.point1.x and point1.y == pair.point1.y and
-                    point2.x == pair.point2.x and point2.y == pair.point2.y):
+            if ((point1.index == pair.point1.index and point2.index == pair.point2.index) or
+                    (point2.index == pair.point1.index and point1.index == pair.point2.index)):
+                print("Já está na black list")
                 return False
-
+        print("Livre")
         return True
 
     def new_closest_pair(self, point1, point2, distance):
@@ -112,7 +119,7 @@ class ClosestPairOfPointAlg:
                 distance = euclideanDistance(list1[count1], list2[count2])
 
                 if (distance < closestPoint.distance):
-                    if self.__off_black_list(list1[count1], list2[count2], black_list):
+                    if self.__off_black_list(list1[count1], list2[count2], distance, black_list):
                         closestPoint = self.new_closest_pair(
                             list1[count1], list2[count2], distance)
 
@@ -123,7 +130,7 @@ class ClosestPairOfPointAlg:
 
                 distance = euclideanDistance(list1[count1], list2[count2])
                 if distance < closestPoint.distance:
-                    if self.__off_black_list(list1[count1], list2[count2], black_list):
+                    if self.__off_black_list(list1[count1], list2[count2], distance, black_list):
                         closestPoint = self.new_closest_pair(
                             list1[count1], list2[count2], distance)
 
@@ -140,6 +147,7 @@ class ClosestPairOfPointAlg:
         closestPoint = ClosestPoint(None, None, math.inf)
 
         if (begin < end):
+            print("\nIn Compare In Merge")
             part1 = self.__merge_in_x(
                 begin, int((begin + end) / 2), sortList)
             part2 = self.__merge_in_x(
@@ -149,15 +157,20 @@ class ClosestPairOfPointAlg:
             testList = partialList.list
             closestPoint = partialList.closestPoints
 
+            print("\nIn Compare Next Seven")
             for indexPoint in range(len(testList)):
                 closestPointTest = self.compare_next_seven_points(
                     indexPoint, testList)
 
                 if closestPointTest.distance < closestPoint.distance:
-                    if self.__off_black_list(closestPointTest.point1, closestPointTest.point2, black_list):
+                    if self.__off_black_list(
+                            closestPointTest.point1, closestPointTest.point2,
+                            closestPointTest.distance, black_list):
+
                         closestPoint = self.new_closest_pair(
                             closestPointTest.point1, closestPointTest.point2, closestPointTest.distance)
 
+            print
             return ListClosestPoints(partialList.list, closestPoint)
 
         return ListClosestPoints(sortList[begin: begin+1], ClosestPoint(sortList[begin], None, math.inf))

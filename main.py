@@ -37,9 +37,9 @@ def init_points(window):
 
     closest_alg = ClosestPairOfPointAlg(sortedPoints)
 
-    print("------------------------ Pares de Pontos Mais Próximos ---------------------")
     closests_points = closest_alg.generate_minimum_tree(window)
 
+    print("------------------------ Pares de Pontos Mais Próximos ---------------------")
     for closest_point in closests_points:
         print_closest_pair(closest_point)
         print(", ")

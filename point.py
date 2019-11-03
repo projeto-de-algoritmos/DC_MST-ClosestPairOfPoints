@@ -1,6 +1,7 @@
 from random import randint
 from config import *
 from PyQt5.QtCore import Qt, QPoint, QRectF
+from PyQt5.QtGui import QPainter, QBrush, QPen, QPixmap
 
 
 class Point:
@@ -41,7 +42,12 @@ class Point:
         self.neighbors.append(point)
 
     def draw(self, painter):
+        painter.setPen(QPen(Qt.red, 3, Qt.SolidLine))
+        painter.setBrush(QBrush(Qt.red, Qt.DiagCrossPattern))
+
         painter.drawEllipse(self.x, self.y, self.__width, self.__height)
+
+        painter.setPen(QPen(Qt.white, 3, Qt.SolidLine))
         painter.drawText(
             QRectF(self.center_x, self.center_y, self.__width, self.__height),
             Qt.AlignCenter | Qt.AlignTop, str(self.index))

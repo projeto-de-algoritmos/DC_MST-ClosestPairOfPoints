@@ -20,7 +20,7 @@ def print_closest_pair(pair):
 def init_points(window):
     range_x = SCREEN_WIDTH - POINT_WIDTH
     range_y = SCREEN_HEIGHT - POINT_HEIGHT
-    qtt_points = 30
+    qtt_points = 5
 
     generator = PointGenerator()
     points = []
@@ -35,12 +35,12 @@ def init_points(window):
     closest_alg = ClosestPairOfPointAlg(sortedPoints)
 
     print("------------------------ Pares de Pontos Mais Próximos ---------------------")
-    closests_points = closest_alg.generate_minimum_tree()
+    closests_points = closest_alg.generate_minimum_tree(window)
 
     for closest_point in closests_points:
         print_closest_pair(closest_point)
         print(", ")
-        window.add_line(closest_point.point1, closest_point.point2)
+        # window.add_line(closest_point.point1, closest_point.point2)
     print()
 
 
@@ -84,9 +84,10 @@ def main():
     window = Window()
 
     init_points(window)
-    # test()
 
+    window.show()
     sys.exit(App.exec_())
+    # test()
 
 
 if __name__ == "__main__":

@@ -1,6 +1,8 @@
 import math
+import time
 from copy import deepcopy
 from util import check_cycle
+from line import LineClosestPoint
 
 
 def euclideanDistance(point1, point2): return math.sqrt(
@@ -41,15 +43,24 @@ class ClosestPairOfPointAlg:
             print(" ), ", end="")
         print(" ]")
 
-    def generate_minimum_tree(self):
+    def generate_minimum_tree(self, window):
         sortedList = deepcopy(self.sorted_list_x)
 
         tree = []
+        lines = []
 
         for index in range(len(sortedList) - 1):
             result = self.__merge_in_x(
                 0, len(sortedList) - 1, sortedList, tree)
             tree.append(result.closestPoints)
+
+            # window.add_line(result.closestPoints.point1,
+            #                 result.closestPoints.point2)
+            lines.append(LineClosestPoint(result.closestPoints.point1,
+                                          result.closestPoints.point2))
+
+        window.animation_add_lines(lines)
+        # check_cycle(deepcopy(tree[0].point1), None)
 
         return tree
 

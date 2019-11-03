@@ -20,7 +20,7 @@ def print_closest_pair(pair):
 def init_points(window):
     range_x = SCREEN_WIDTH - POINT_WIDTH
     range_y = SCREEN_HEIGHT - POINT_HEIGHT
-    qtt_points = 5
+    qtt_points = 10
 
     generator = PointGenerator()
     points = []

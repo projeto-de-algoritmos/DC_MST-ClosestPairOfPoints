@@ -1,3 +1,6 @@
+from copy import deepcopy
+
+
 class MergeSort:
     def __init__(self, list=[]):
         self.__list: list = list

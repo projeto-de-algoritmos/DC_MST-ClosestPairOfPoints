@@ -13,10 +13,16 @@ from closestPairOfPoints import ClosestPairOfPointAlg, ListClosestPoints, Closes
 
 
 def print_closest_pair(pair):
-    print("( ", pair.point1.index,
-          ": {", pair.point1.x, ", ", pair.point1.y, "}, ", end="")
-    print(pair.point2.index, ": ",
-          "{", pair.point2.x, ", ", pair.point2.y, "} )", end="")
+    if pair.point1 != None:
+        print("( ", pair.point1.index,
+              ": {", pair.point1.x, ", ", pair.point1.y, "}, ", end="")
+    else:
+        print("(None)", end="")
+    if pair.point2 != None:
+        print(pair.point2.index, ": ",
+              "{", pair.point2.x, ", ", pair.point2.y, "} )", end="")
+    else:
+        print("(None)", end="")
     print(" distance: ", pair.distance, end="")
 
 
@@ -31,15 +37,18 @@ def init_points(window):
 
     sortedPoints = []
     sort = MergeSort(points)
-    sortedPoints = sort.sort_in_x()
+    sortedPoints = sort.sort_x()
 
     window.add_points(sortedPoints)
 
     closest_alg = ClosestPairOfPointAlg(sortedPoints)
 
+    # closests_points = closest_alg.generate_minimum_tree(window)
+
     closests_points = closest_alg.generate_minimum_tree(window)
 
     print("------------------------ Pares de Pontos Mais Próximos ---------------------")
+
     for closest_point in closests_points:
         print_closest_pair(closest_point)
         print(", ")
@@ -49,37 +58,21 @@ def init_points(window):
 
 def test():
     points = []
-    point1 = Point(1, 2)
+    point1 = Point(1, 6)
     point2 = Point(3, 4)
-    point3 = Point(5, 6)
+    point3 = Point(5, 2)
     point4 = Point(7, 8)
-    points.append(point1)
     points.append(point2)
-    points.append(point3)
     points.append(point4)
+    points.append(point1)
+    points.append(point3)
 
-    point1.add_neighbor(point2)
-    point2.add_neighbor(point1)
+    sort = MergeSort(points)
+    points = sort.sort_x()
 
-    point1.add_neighbor(point4)
-    point4.add_neighbor(point1)
-
-    # point1.add_neighbor(point3)
-    # point3.add_neighbor(point1)
-
-    point2.add_neighbor(point3)
-    point3.add_neighbor(point2)
-
-    # point2.add_neighbor(point4)
-    # point4.add_neighbor(point2)
-
-    # cycle
-    point3.add_neighbor(point4)
-    point4.add_neighbor(point3)
-
-    check_cycle(deepcopy(point1), None)
     for point in points:
-        print(point.visited)
+        print("%s, " % (point.index), end="")
+    print()
 
 
 def main():
@@ -87,10 +80,10 @@ def main():
     window = Window()
 
     init_points(window)
+    # test()
 
     window.show()
     sys.exit(App.exec_())
-    # test()
 
 
 if __name__ == "__main__":

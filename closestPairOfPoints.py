@@ -52,11 +52,11 @@ class ClosestPairOfPointAlg:
             tree.append(result)
             self.black_list.append(result)
 
-            lines.append(LineClosestPoint(result.point1,
-                                          result.point2))
+            if result.point1 is not None and result.point2 is not None:
+                lines.append(LineClosestPoint(result.point1,
+                                              result.point2))
 
         window.animation_add_lines(lines)
-        # check_cycle(deepcopy(tree[0].point1), None)
 
         return tree
 
@@ -77,15 +77,12 @@ class ClosestPairOfPointAlg:
         self.print_list(list_sorted_y)
 
         print("\nInit Compare Next 7\n")
-
         for i in range(len(list_sorted_y) - 1):
-            closest_t = self.compare_next_seven_points(i, list_sorted_y)
+            closest_t = self.compare_next_seven_points(
+                i, list_sorted_y, closest)
             if closest_t.distance < closest.distance:
-                if self.__verify_black_list(closest_t):
+                if self.__verify_black_list(closest_t.point1, closest_t.point2):
                     closest = closest_t
-
-        # print("MIN: %s, %s : %s" %
-        #       (closest.point1.index, closest.point2.index, closest.distance))
         print("\nEnd Compare Next 7\n")
 
         return closest
@@ -105,47 +102,42 @@ class ClosestPairOfPointAlg:
 
     def __min_closest(self, closest1, closest2):
         if closest2.distance < closest1.distance:
-            if self.__verify_black_list(closest2):
+            if self.__verify_black_list(closest2.point1, closest2.point2):
                 return closest2
-        if self.__verify_black_list(closest1):
+        if self.__verify_black_list(closest1.point1, closest1.point2):
             return closest1
 
-        print("########## MIN NONE: %s" % (math.inf))
         return ClosestPoint(None, None, math.inf)
 
-    def __verify_black_list(self, closest):
-        if closest.point1 is None or closest.point2 is None:
+    def __verify_black_list(self, point1, point2):
+        if point1 is None or point2 is None:
             return False
 
-        print("VERIFY BlackList: %s, %s : %s" %
-              (closest.point1.index, closest.point2.index, closest.distance), end=" = ")
-
+        print("verify blacklist {%s, %s}" % (point1.index, point2.index))
         for elem in self.black_list:
-            if ((closest.point1.index == elem.point1.index and closest.point2.index == elem.point2.index) or
-                    (closest.point2.index == elem.point1.index and closest.point1.index == elem.point2.index)):
+            if ((point1.index == elem.point1.index and point2.index == elem.point2.index) or
+                    (point2.index == elem.point1.index and point1.index == elem.point2.index)):
                 print("Já na BlackList")
                 return False
         print("Livre")
         return True
 
-    def compare_next_seven_points(self, index, list):
-        closestPoint = ClosestPoint(None, None, math.inf)
+    def compare_next_seven_points(self, index, list, current_closest):
 
         possibleRange = index + 8 if index + 8 <= len(list) else len(list)
 
         for indexCount in range(index + 1, possibleRange):
             distance = euclideanDistance(list[index], list[indexCount])
-            print("distance: ", distance)
-            print("current distance: ", closestPoint.distance)
-            if distance < closestPoint.distance:
-                closestPoint.point1 = list[index]
-                closestPoint.point2 = list[indexCount]
-                closestPoint.distance = distance
+            print("current: ", distance)
+            print("min: ", distance)
+            if distance < current_closest.distance:
+                print("add")
+                if self.__verify_black_list(list[index], list[indexCount]):
+                    current_closest.point1 = list[index]
+                    current_closest.point2 = list[indexCount]
+                    current_closest.distance = distance
 
-        print("MIN Compare Next: %s, %s : %s" %
-              (closestPoint.point1.index, closestPoint.point2.index, closestPoint.distance))
-
-        return closestPoint
+        return current_closest
 
     def __print_blacklist(self):
         print("\n---------------------------------------------------")
